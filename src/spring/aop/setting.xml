@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<bean id="target" class="spring.aop.entity.AiswExam" p:kor="10" p:eng="20" p:math="30" />
+		
+	<bean id="logAroundAdvice" class="spring.aop.advice.LogAroundAdvice" />
+	<bean id="logBeforeAdvice" class="spring.aop.advice.LogBeforeAdvice" />
+	<bean id="logAfterAdvice" class="spring.aop.advice.LogAfterAdvice" />
+
+<!-- 	<bean id="classicPointCut" class="org.springframework.aop.support.NameMatchMethodPointcut"> -->
+<!-- 		<property name="mappedName" value="total" /> -->
+<!-- 	</bean> -->
+
+	<!-- 지정은 해줬고 연결도 해줘야 하잖아? advice는 LogBeforeAdvice에서 가져오고. -->
+<!-- 	<bean id="classicBeforeAdvice" class="org.springframework.aop.support.DefaultPointcutAdvisor"> -->
+<!-- 	<property name="advice" ref="logBeforeAdvice" /> -->
+<!-- 	<property name="pointcut" ref="classicPointCut" /> -->
+<!-- 	</bean> -->
+
+	<!-- 프로퍼티의 name과 class 명을 mappedName과 NameMatched로 바꿔주면 위 두개를 합친 것과 같은결과 -->
+	<bean id="classicAroundAdvisor" class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+	<property name="advice" ref="logAroundAdvice" />
+	<property name="mappedName" value="getTotal" />
+	</bean>
+	
+<!-- 	<bean id="classicBeforeAdvice" class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor"> -->
+<!-- 	<property name="advice" ref="logBeforeAdvice" /> -->
+<!-- 	<property name="mappedName" value="total" /> -->
+<!-- 	</bean> -->
+	
+	<bean id="exam" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="target" />
+		<property name="interceptorNames">
+			<!-- 생성한 클래스의 객체를 정해주는 것임. exam...? -->
+			<list>
+<!-- 				<value>logAroundAdvice</value> -->
+				<value>classicAroundAdvisor</value>
+<!-- 				<value>logBeforeAdvice</value> -->
+<!-- 				<value>logAfterAdvice</value> -->
+<!-- 				<value>classicBeforeAdvice</value> -->
+			</list>
+		</property>
+	</bean>
+</beans>
+
+
+
+
